@@ -13,6 +13,7 @@ export interface IPosition {
 }
 
 export interface ICreateCube {
+  isSelected?: boolean;
   meshName: string;
   meshType?: string;
   meshWidth: number;
@@ -49,6 +50,7 @@ export default function CreateCube(props: TCreateCube) {
     materialTexture,
     materialBumb,
     materialRef,
+    rotation,
   } = props.objProperties;
   //Material Control And Add --------------------------------------------
   const diffuseTexture = materialTexture || "";
@@ -84,8 +86,18 @@ export default function CreateCube(props: TCreateCube) {
   }, [diffuseMap, bumpMap, refMap]);
   //------------------------------------------------
 
+  //Location Clc-------------------
+  const lastObjPosition = new Three.Vector3(meshWidth / 2, meshHeight / 2, meshDepth / 2);
+  const lastPosition = new Three.Vector3(
+    lastObjPosition.x + position.z,
+    lastObjPosition.y + position.x,
+    lastObjPosition.z + position.y
+  );
+
+  //-------------------------------
+
   return (
-    <mesh name={meshName} position={[position.x, position.y, position.z]} material={material}>
+    <mesh name={meshName} position={[lastPosition.x, lastPosition.y, lastPosition.z]} material={material}>
       <boxBufferGeometry attach='geometry' args={[meshWidth, meshHeight, meshDepth]} />
     </mesh>
   );

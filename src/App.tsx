@@ -4,6 +4,10 @@ import LeftSideMenu from "./SarginApi/UI/LeftSideMenu";
 import { Canvas } from "react-three-fiber";
 import Scene from "./SarginApi/Scene/Scene";
 import * as Three from "three";
+import Floor1T from "./SarginApi/Materials/Texture/TextureImages/floor_1_T.jpg";
+import { ICreateCube, IPosition } from "./SarginApi/CreateObjects/CreateCube";
+import TestData from "./SarginApi/TextData/test.json";
+import DataParser from "./SarginApi/DataParser/DataParser";
 
 export interface ICizimModul {
   adi: string;
@@ -34,41 +38,33 @@ export interface IMeshsInTheScene {
   isSelected?: boolean;
   size?: Three.Vector3;
   setSize?(value: Three.Vector3): void;
-  position?: Three.Vector3;
+  position?: IPosition;
   objItem?: Three.BoxBufferGeometry | Three.SphereBufferGeometry;
-  material?: Three.MeshStandardMaterial;
   description?: string;
+  materialTexture?: string;
+  meshWidth?: number;
+  meshHeight?: number;
+  meshDepth?: number;
+  duvarNo?: number;
+  rotation: { lx: number; ly: number; lz: number };
 }
 
 function App() {
-  const [topla, setTopla] = useState(0);
+  const [cizim, setCizim] = useState<any>(DataParser(TestData));
 
-  function toplamaIslemi(a: number, b: number) {
-    const sonuc = a + b;
-    console.log(sonuc);
-    setTopla(sonuc);
-  }
+  const [meshInTheScene, setMeshInTheScene] = useState<Array<IMeshsInTheScene>>();
 
-  const [meshInTheScene, setMeshInTheScene] = useState<Array<IMeshsInTheScene>>([
-    {
-      meshName: "testObj",
-      isSelected: false,
-      size: new Three.Vector3(20, 20, 20),
-      position: new Three.Vector3(2, 10, 2),
-    },
-    {
-      meshName: "testObj2",
-      isSelected: false,
-      size: new Three.Vector3(20, 20, 20),
-      position: new Three.Vector3(20, 20, 0),
-    },
-  ]);
+  useEffect(() => {
+    console.log(meshInTheScene);
+  }, [meshInTheScene]);
+
+  function updateMeshInTheSceneItems(value: ICreateCube) {}
 
   function updateSelectedItemProp(e: PointerEvent | any) {
     e.stopPropagation();
     const { name } = e.object;
-    setMeshInTheScene((item: Array<IMeshsInTheScene>) => {
-      let meshItems: Array<IMeshsInTheScene> = item;
+    setMeshInTheScene((item: Array<IMeshsInTheScene> | any) => {
+      let meshItems = item || [];
 
       meshItems = meshItems.map((element: IMeshsInTheScene) => {
         if (name === element.meshName) {
@@ -85,7 +81,7 @@ function App() {
   }
 
   function updateMeshProperty(id: string, value: { size?: Three.Vector3; position?: Three.Vector3 }) {
-    setMeshInTheScene((item: Array<IMeshsInTheScene>) => {
+    setMeshInTheScene((item: Array<IMeshsInTheScene> | any) => {
       let meshs = item;
 
       meshs = meshs.map((el: IMeshsInTheScene) => {
@@ -126,19 +122,15 @@ function App() {
             width: "95%",
             height: window.innerHeight / 1.2,
           }}>
-          <Scene
-            toplamaIslemi={toplamaIslemi}
-            meshInTheScene={meshInTheScene}
-            updateSelectedItemProp={updateSelectedItemProp}
-            setMeshInTheScene={setMeshInTheScene}
-            setSelectedItem={setSelectedItem}
-          />
+          {cizim && <Scene setMeshInTheScene={setMeshInTheScene} cizim={cizim} />}
         </Canvas>
       </div>
-      <LeftSideMenu
-        setMeshProperties={setMeshProperties}
-        selectedItem={meshInTheScene.filter((el: IMeshsInTheScene) => el.isSelected)}
-      />
+      {meshInTheScene && (
+        <LeftSideMenu
+          setMeshProperties={setMeshProperties}
+          selectedItem={meshInTheScene.filter((el: IMeshsInTheScene) => el.isSelected)}
+        />
+      )}
     </div>
   );
 }
