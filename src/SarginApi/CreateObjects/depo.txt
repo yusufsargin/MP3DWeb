@@ -1,0 +1,70 @@
+const createGeomerty = () => {
+    let bufBox = new Three.BoxBufferGeometry(10, 10, 10);
+    let geometry = new Three.Geometry().fromBufferGeometry(bufBox);
+    geometry.computeBoundingBox();
+
+    let max = geometry.boundingBox?.max,
+      min = geometry.boundingBox?.min;
+
+    if (min && max) {
+      var offset = new Three.Vector2(0 - min.x, 0 - min.y);
+      var range = new Three.Vector2(max.x - min.x, max.y - min.y);
+      var faces = geometry.faces;
+
+      geometry.faceVertexUvs[0] = [];
+
+      for (var i = 0; i < faces.length; i++) {
+        var v1 = geometry.vertices[faces[i].a],
+          v2 = geometry.vertices[faces[i].b],
+          v3 = geometry.vertices[faces[i].c];
+
+        geometry.faceVertexUvs[0].push([
+          new Three.Vector2((v1.x + offset.x) / range.x, (v1.y + offset.y) / range.y),
+          new Three.Vector2((v2.x + offset.x) / range.x, (v2.y + offset.y) / range.y),
+          new Three.Vector2((v3.x + offset.x) / range.x, (v3.y + offset.y) / range.y),
+        ]);
+      }
+      geometry.uvsNeedUpdate = true;
+    }
+
+    return geometry;
+  };
+
+  const MaterialCreator = (props: IMaterialProp) => {
+    const { materialTexture, materialBumb, materialRef } = props;
+
+    //  "../Materials/Texture/TextureImages/floor_1_R.jpg"
+
+    // let objMaterial = new Three.MeshStandardMaterial();
+
+    // if (materialTexture) {
+    //   getTexture("../Materials/Texture/TextureImages/floor_1_R.jpg").then((texture) => (objMaterial.map = texture));
+    //   if (materialRef && materialBumb) {
+    //     getTexture(materialRef).then((texture) => (objMaterial.alphaMap = texture));
+    //     getTexture(materialBumb).then((texture) => (objMaterial.bumpMap = texture));
+    //   }
+    // }
+  };
+
+  const Material = (props: IMaterialProp) => {
+    const { materialBumb, materialRef, materialTexture, attach } = props;
+
+    const texture = new Three.TextureLoader().load("../Materials/Texture/TextureImages/floor_1_R.jpg");
+
+    console.log(texture);
+    return (
+      <meshStandardMaterial attach={attach} map={texture}>
+        <texture image={texture} attach='map' onUpdate={(self) => texture && (self.needsUpdate = true)} />
+      </meshStandardMaterial>
+    );
+  };
+
+  const standardMaterial = (): Three.MeshStandardMaterial => {
+    let material = new Three.MeshStandardMaterial();
+    let texture = new TextureLoader().load("../Materials/Texture/TextureImages/02.jpg");
+
+    material.map = texture;
+
+    console.log(material);
+    return material;
+  };

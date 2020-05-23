@@ -4,6 +4,9 @@ import * as Three from "three";
 import { ISelectedProduct } from "../UI/SettingsCard";
 import { IMeshsInTheScene } from "../../App";
 import { BoxBufferGeometry } from "three";
+import CreateCube from "../CreateObjects/CreateCube";
+import Floor1T from "../Materials/Texture/TextureImages/floor_1_T.jpg";
+import Floor1R from "../Materials/Texture/TextureImages/floor_1_R.jpg";
 
 interface IOrbitControl {
   enablePan?: boolean;
@@ -16,9 +19,11 @@ interface IOrbitControl {
 
 interface IDefaultLights {
   position?: Three.Vector3;
+  intensity?: number;
 }
 
 export default function Scene(props: any) {
+  console.log(Floor1T);
   const firstMesh = useRef<any>();
   const secondMesh = useRef<any>();
   //import setStateItem Hook
@@ -61,7 +66,8 @@ export default function Scene(props: any) {
   const SceneDefaultLights = (props: IDefaultLights) => {
     return (
       <>
-        <pointLight {...props} /> <Sky />
+        <pointLight {...props} />
+        <Sky />
       </>
     );
   };
@@ -102,9 +108,9 @@ export default function Scene(props: any) {
   return (
     <>
       <Control screenSpacePanning zoomSpeed={3} panSpeed={2} enablePan={true} enableZoom={true} enableRotate={true} />
-      <SceneDefaultLights position={new Three.Vector3(0, 0, 0)} />
+      <SceneDefaultLights intensity={2} position={new Three.Vector3(100, 50, 50)} />
       {/* <DefaultCube /> */}
-      <group name='test' onPointerDown={(e: any) => e.stopPropagation() && console.log(e)}>
+      {/* <group name='test' onPointerDown={(e: any) => e.stopPropagation() && console.log(e)}>
         {(meshInTheScene || []).map((item: IMeshsInTheScene, index: number) => {
           return (
             <PropsCubes
@@ -116,7 +122,23 @@ export default function Scene(props: any) {
             />
           );
         })}
-      </group>
+      </group> */}
+      <CreateCube
+        objProperties={{
+          meshName: "test",
+          meshDepth: 10,
+          meshHeight: 10,
+          meshWidth: 10,
+          position: {
+            x: 0,
+            y: 0,
+            z: 0,
+          },
+          materialTexture: Floor1T,
+          materialBumb: Floor1R,
+          materialRef: Floor1R,
+        }}
+      />
     </>
   );
 }
