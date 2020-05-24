@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
 import { ICizimModul, IMeshsInTheScene } from "../../App";
-import CreateCube, { ICreateCube, IMaterialProp } from "../CreateObjects/CreateCube";
 import Floor1T from "../Materials/Texture/TextureImages/floor_1_T.jpg";
 
 export type TMainDrawEngine = {
@@ -11,13 +9,9 @@ export type TMainDrawEngine = {
   setMeshesInTheScene?: any;
 };
 
-export default function MainDrawEngine(props: TMainDrawEngine) {
+export default function SerializeData(props: TMainDrawEngine): Array<IMeshsInTheScene> {
   const { collection, SIZERATIO, duvarFilter } = props;
   let lastData: Array<IMeshsInTheScene> = [];
-
-  useEffect(() => {
-    console.log(props.setMeshesInTheScene);
-  }, [props.setMeshesInTheScene]);
 
   collection.map((item: ICizimModul, index: number) => {
     let location = { lx: 0, ly: 0, lz: 0 };
@@ -89,6 +83,7 @@ export default function MainDrawEngine(props: TMainDrawEngine) {
         position: position,
         rotation: location,
         materialTexture: Floor1T,
+        isSelected: false,
       });
       // setSceneMeshItems((state) => {
       //   let last = state || [];
@@ -117,10 +112,11 @@ export default function MainDrawEngine(props: TMainDrawEngine) {
       //     materialTexture:Floor1T
       //   }}
       // />
-    } else {
-      return <></>;
     }
   });
-
-  return <></>;
+  if (lastData.length === 0) {
+    return [];
+  } else {
+    return lastData;
+  }
 }

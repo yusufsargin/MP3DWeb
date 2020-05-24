@@ -1,10 +1,12 @@
-import React, { useRef, useState, useCallback } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import { OrbitControls, Sky } from "drei";
 import * as Three from "three";
 import CreateCube from "../CreateObjects/CreateCube";
 import Floor1T from "../Materials/Texture/TextureImages/floor_1_T.jpg";
 import Floor1R from "../Materials/Texture/TextureImages/floor_1_R.jpg";
 import MainDrawEngine from "../DrawEngine/MainDrawEngine";
+import SerializeData from "../DataParser/SerializeData";
+import { IMeshsInTheScene } from "../../App";
 
 interface IOrbitControl {
   enablePan?: boolean;
@@ -21,6 +23,7 @@ interface IDefaultLights {
 }
 
 export default function Scene(props: any) {
+  const [serialDataFirstWall, setSerialDataFirstWall] = useState<Array<Array<IMeshsInTheScene>>>();
   const { cizim, setMeshInTheScene } = props;
 
   const Control = (props: IOrbitControl) => {
@@ -40,10 +43,34 @@ export default function Scene(props: any) {
     );
   };
 
+  useEffect(() => {
+    if (cizim) {
+      //0. duvar items
+      Object.values(cizim).map((collection: any, index: number) => {
+        const item = SerializeData({
+          collection: collection,
+          duvarFilter: 0,
+        }).filter((el: any) => el !== []);
+
+        if (item.length > 0 && item) {
+          setSerialDataFirstWall((state) => {
+            let last = state || [];
+
+            last.push(item);
+
+            return last;
+          });
+        }
+      });
+
+      //1.Duvar Items
+    }
+  }, [cizim]);
+
   return (
     <>
       <Control screenSpacePanning zoomSpeed={3} panSpeed={2} enablePan={true} enableZoom={true} enableRotate={true} />
-      <SceneDefaultLights intensity={2} position={new Three.Vector3(100, 50, 50)} />
+      <SceneDefaultLights intensity={2} position={new Three.Vector3(0, 100, 100)} />
       {/* <CreateCube
         objProperties={{
           meshName: "test",
@@ -60,11 +87,26 @@ export default function Scene(props: any) {
           materialRef: Floor1R,
         }}
       /> */}
-      {Object.values(cizim).map((collection: any, index: number) => {
-        if (collection[0].duvaNo === 1) {
-          return <MainDrawEngine collection={collection} setMeshesInTheScene={setMeshInTheScene} />;
-        }
-      })}
+      <group position={[0, 100, -100]} rotation={new Three.Euler(Math.PI / 2, 0, Math.PI / 2)}>
+        {serialDataFirstWall &&
+          serialDataFirstWall.map((collection, index) => {
+            return collection.map((item, key) => {
+              return (
+                <CreateCube
+                  objProperties={{
+                    meshName: item.meshName || "",
+                    meshWidth: item.meshWidth || 0,
+                    meshHeight: item.meshHeight || 0,
+                    meshDepth: item.meshDepth || 0,
+                    isSelected: item.isSelected || false,
+                    position: item.position || { x: 0, y: 0, z: 0 },
+                    materialTexture: Floor1T,
+                  }}
+                />
+              );
+            });
+          })}
+      </group>
     </>
   );
 }
