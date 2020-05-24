@@ -1,9 +1,10 @@
 import React, { Suspense, useState, useEffect, useMemo, useRef } from "react";
 import * as Three from "three";
-import { TextureLoader } from "three";
+import { TextureLoader, MaterialLoader } from "three";
 import Floor1T from "../Materials/Texture/TextureImages/floor_1_R.jpg";
 import { useLoader } from "react-three-fiber";
 import { BasisTextureLoader } from "three/examples/jsm/loaders/BasisTextureLoader";
+import MaterialCreator from "../Materials/MaterialLib/MaterialCreator";
 
 export interface IPosition {
   x: number;
@@ -57,33 +58,18 @@ export default function CreateCube(props: TCreateCube) {
   const bumpTexture = materialBumb || "";
   const refTexture = materialRef || "";
 
-  const [diffuseMap, setDiffuseMap] = useState(new TextureLoader().load(diffuseTexture));
-  const [bumpMap, setBumpMap] = useState(new TextureLoader().load(bumpTexture));
-  const [refMap, setRefMap] = useState(new TextureLoader().load(refTexture));
   const [material, setMaterial] = useState<Three.MeshStandardMaterial>();
 
   useEffect(() => {
-    //Set Material prop
-    setMaterial(() => {
-      let lastState = new Three.MeshStandardMaterial();
-
-      if (lastState && diffuseMap) {
-        lastState.map = diffuseMap;
-        lastState.refractionRatio = 0.7;
-
-        if (bumpTexture !== "") {
-          lastState.bumpMap = bumpMap;
-          lastState.bumpScale = 0.05;
-        }
-
-        if (refTexture !== "") {
-          lastState.roughnessMap = refMap;
-        }
-      }
-
-      return lastState;
+    const material = MaterialCreator({
+      materialTexture: diffuseTexture,
+      materialBumb: bumpTexture,
+      materialRef: refTexture,
+      bumbScale: 0.5,
     });
-  }, [diffuseMap, bumpMap, refMap]);
+
+    setMaterial(material);
+  }, []);
   //------------------------------------------------
 
   //Location Clc-------------------

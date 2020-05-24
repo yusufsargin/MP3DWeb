@@ -1,10 +1,8 @@
-import React, { useRef, useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { OrbitControls, Sky } from "drei";
 import * as Three from "three";
 import CreateCube from "../CreateObjects/CreateCube";
 import Floor1T from "../Materials/Texture/TextureImages/floor_1_T.jpg";
-import Floor1R from "../Materials/Texture/TextureImages/floor_1_R.jpg";
-import MainDrawEngine from "../DrawEngine/MainDrawEngine";
 import SerializeData from "../DataParser/SerializeData";
 import { IMeshsInTheScene } from "../../App";
 
@@ -24,7 +22,7 @@ interface IDefaultLights {
 
 export default function Scene(props: any) {
   const [serialDataFirstWall, setSerialDataFirstWall] = useState<Array<Array<IMeshsInTheScene>>>();
-  const { cizim, setMeshInTheScene } = props;
+  const { cizim } = props;
 
   const Control = (props: IOrbitControl) => {
     return (
@@ -37,7 +35,8 @@ export default function Scene(props: any) {
   const SceneDefaultLights = (props: IDefaultLights) => {
     return (
       <>
-        <pointLight {...props} />
+        {/* <pointLight {...props} /> */}
+        <ambientLight {...props} />
         <Sky />
       </>
     );
@@ -70,7 +69,7 @@ export default function Scene(props: any) {
   return (
     <>
       <Control screenSpacePanning zoomSpeed={3} panSpeed={2} enablePan={true} enableZoom={true} enableRotate={true} />
-      <SceneDefaultLights intensity={2} position={new Three.Vector3(0, 100, 100)} />
+      <SceneDefaultLights intensity={1} position={new Three.Vector3(0, 100, 100)} />
       {/* <CreateCube
         objProperties={{
           meshName: "test",

@@ -50,35 +50,13 @@ export interface IMeshsInTheScene {
 }
 
 function App() {
-  const [cizim, setCizim] = useState<any>(DataParser(TestData));
+  const [cizim] = useState<any>(DataParser(TestData));
 
   const [meshInTheScene, setMeshInTheScene] = useState<Array<IMeshsInTheScene>>();
 
   useEffect(() => {
     console.log(meshInTheScene);
   }, [meshInTheScene]);
-
-  function updateMeshInTheSceneItems(value: ICreateCube) {}
-
-  function updateSelectedItemProp(e: PointerEvent | any) {
-    e.stopPropagation();
-    const { name } = e.object;
-    setMeshInTheScene((item: Array<IMeshsInTheScene> | any) => {
-      let meshItems = item || [];
-
-      meshItems = meshItems.map((element: IMeshsInTheScene) => {
-        if (name === element.meshName) {
-          element.isSelected = true;
-          return element;
-        }
-
-        element.isSelected = false;
-        return element;
-      });
-
-      return meshItems;
-    });
-  }
 
   function updateMeshProperty(id: string, value: { size?: Three.Vector3; position?: Three.Vector3 }) {
     setMeshInTheScene((item: Array<IMeshsInTheScene> | any) => {
@@ -110,8 +88,6 @@ function App() {
         break;
     }
   }
-
-  const [selectedItem, setSelectedItem] = useState<ISelectedItem>();
 
   return (
     <div className='App'>
