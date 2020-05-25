@@ -74,34 +74,8 @@ export default function SettingsCard(props: SelectedProduct) {
                       Derinlik
                     </List.Item>
                   </List>
-                  {/* <Input
-                    label={{ basic: true, content: "CM" }}
-                    labelPosition='right'
-                    type='text'
-                    placeholder={"Genislik -" + el.meshWidth}
-                    onChange={(e) => setItemValue(el, "genislik", parseInt(e.target.value.replace(/[^0-9]/g, "")))}
-                  />
-                  <Input
-                    label={{ basic: true, content: "CM" }}
-                    labelPosition='right'
-                    type='text'
-                    placeholder={"Boy -" + el.meshHeight}
-                    onChange={(e) => setItemValue(el, "boy", parseInt(e.target.value.replace(/[^0-9]/g, "")))}
-                  />
-                  <Input
-                    label={{ basic: true, content: "CM" }}
-                    labelPosition='right'
-                    placeholder={"Derinlik -" + el.meshDepth}
-                    onChange={(e) => setItemValue(el, "derinlik", parseInt(e.target.value.replace(/[^0-9]/g, "")))}
-                  /> */}
                 </Card.Description>
               </Card.Content>
-              {/* <Card.Content extra>
-                <div className='ui two buttons'>
-                  {el.isSelected === true ? <Button color='orange'>Düzenle</Button> : ""}
-                  <Button color='red'>Sil</Button>
-                </div>
-              </Card.Content> */}
             </Card>
           );
         })}

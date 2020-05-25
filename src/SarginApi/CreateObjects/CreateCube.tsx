@@ -51,7 +51,6 @@ export default function CreateCube(props: TCreateCube) {
     materialTexture,
     materialBumb,
     materialRef,
-    rotation,
   } = props.objProperties;
   //Material Control And Add --------------------------------------------
   const diffuseTexture = materialTexture || "";

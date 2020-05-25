@@ -7,6 +7,8 @@ import * as Three from "three";
 import { IPosition } from "./SarginApi/CreateObjects/CreateCube";
 import TestData from "./SarginApi/TextData/test.json";
 import DataParser from "./SarginApi/DataParser/DataParser";
+import FindMinPoints from "./SarginApi/Utils/FindMinPoints";
+import FindMaxPoints from "./SarginApi/Utils/FindMaxPoints";
 
 export interface ICizimModul {
   adi: string;
@@ -31,7 +33,6 @@ export interface ICizimModul {
   extra: { cekmecekontrol: boolean };
 }
 
-interface ISelectedItem {}
 export interface IMeshsInTheScene {
   meshName?: string;
   isSelected?: boolean;
@@ -47,10 +48,6 @@ export interface IMeshsInTheScene {
   duvarNo?: number;
   rotation: { lx: number; ly: number; lz: number };
   modulAdi?: string;
-}
-
-interface IMeshes {
-  collectionName: Array<IMeshsInTheScene>;
 }
 
 function App() {
@@ -71,6 +68,11 @@ function App() {
     },
     [meshInTheScene]
   );
+
+  useEffect(() => {
+    if (meshInTheScene) {
+    }
+  }, [meshInTheScene]);
 
   const updateSelectedItems = useCallback((updatedData: IMeshsInTheScene[][]) => {
     if (updatedData) {
@@ -105,6 +107,19 @@ function App() {
           return el;
         });
       });
+
+      const item = updatedData.filter((item: IMeshsInTheScene[]) => {
+        return item[0].isSelected;
+      })[0];
+
+      const minPoints = FindMinPoints({
+        mesh: item,
+      });
+      const maxPoints = FindMaxPoints({
+        mesh: item,
+      });
+
+      console.log(maxPoints.x - minPoints.x);
 
       updateSelectedItems(updatedData);
     }

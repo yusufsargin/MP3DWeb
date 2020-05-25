@@ -1,5 +1,6 @@
 import { ICizimModul, IMeshsInTheScene } from "../../App";
 import Floor1T from "../Materials/Texture/TextureImages/floor_1_T.jpg";
+import * as Three from "three";
 
 export type TMainDrawEngine = {
   collection: any;
@@ -86,6 +87,7 @@ export default function SerializeData(props: TMainDrawEngine): Array<IMeshsInThe
         isSelected: false,
         duvarNo: duvarFilter,
         modulAdi: item.modulAdi,
+        objItem: new Three.BoxBufferGeometry(en, boy, kalinlik),
       });
     }
   });
