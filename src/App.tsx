@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 import "./App.css";
 import LeftSideMenu from "./SarginApi/UI/LeftSideMenu";
 import { Canvas } from "react-three-fiber";
 import Scene from "./SarginApi/Scene/Scene";
 import * as Three from "three";
-import Floor1T from "./SarginApi/Materials/Texture/TextureImages/floor_1_T.jpg";
-import { ICreateCube, IPosition } from "./SarginApi/CreateObjects/CreateCube";
+import { IPosition } from "./SarginApi/CreateObjects/CreateCube";
 import TestData from "./SarginApi/TextData/test.json";
 import DataParser from "./SarginApi/DataParser/DataParser";
 
@@ -47,47 +46,84 @@ export interface IMeshsInTheScene {
   meshDepth?: number;
   duvarNo?: number;
   rotation: { lx: number; ly: number; lz: number };
+  modulAdi?: string;
+}
+
+interface IMeshes {
+  collectionName: Array<IMeshsInTheScene>;
 }
 
 function App() {
   const [cizim] = useState<any>(DataParser(TestData));
+  const [selectedItems, setSelectedItems] = useState<Array<IMeshsInTheScene>>();
 
-  const [meshInTheScene, setMeshInTheScene] = useState<Array<IMeshsInTheScene>>();
+  const [meshInTheScene, setMeshInTheScene] = useState<Array<Array<IMeshsInTheScene>>>();
 
-  useEffect(() => {
-    console.log(meshInTheScene);
-  }, [meshInTheScene]);
+  const updateMeshItems = useCallback(
+    (value: Array<IMeshsInTheScene>) => {
+      setMeshInTheScene((state) => {
+        let lastState = state || [];
 
-  function updateMeshProperty(id: string, value: { size?: Three.Vector3; position?: Three.Vector3 }) {
-    setMeshInTheScene((item: Array<IMeshsInTheScene> | any) => {
-      let meshs = item;
+        lastState.push(value);
 
-      meshs = meshs.map((el: IMeshsInTheScene) => {
-        if (id === el.meshName) {
-          el.objItem = new Three.BoxBufferGeometry(value.size?.x, value.size?.y, value.size?.z);
-          if (value.size) {
-            el.size = value.size;
+        return lastState;
+      });
+    },
+    [meshInTheScene]
+  );
+
+  const updateSelectedItems = useCallback((updatedData: IMeshsInTheScene[][]) => {
+    if (updatedData) {
+      let lastData: IMeshsInTheScene[] = [];
+
+      updatedData.map((el: Array<IMeshsInTheScene>) => {
+        el.map((item) => {
+          if (item.isSelected) {
+            lastData.push(item);
           }
-          if (value.position) {
-            el.position = value.position;
-          }
-          return el;
-        }
-
-        return el;
+        });
       });
 
-      return meshs;
-    });
-  }
-
-  function setMeshProperties(type: string, value: { size?: Three.Vector3; position?: Three.Vector3 }, id: string) {
-    switch (type) {
-      case "setSize":
-        updateMeshProperty(id, value);
-        break;
+      setSelectedItems(lastData);
     }
-  }
+  }, []);
+
+  const handleGroupPointerDownToMeshes = (e: PointerEvent | any, duvarNo?: number) => {
+    e.stopPropagation();
+    const groupName = e.eventObject.name || "";
+    if (meshInTheScene) {
+      const updatedData: Array<Array<IMeshsInTheScene>> | any = meshInTheScene.map((item) => {
+        return item.map((el: IMeshsInTheScene) => {
+          if (el.duvarNo === (duvarNo || 0)) {
+            if (el.modulAdi === groupName) {
+              el.isSelected = true;
+              return el;
+            }
+          }
+
+          el.isSelected = false;
+          return el;
+        });
+      });
+
+      updateSelectedItems(updatedData);
+    }
+  };
+
+  const LeftSideMenuWithMemo = useMemo(() => {
+    return selectedItems && <LeftSideMenu selectedItem={selectedItems} />;
+  }, [selectedItems]);
+
+  const SceneWithMemo = useMemo(() => {
+    return (
+      <Scene
+        updateMeshItems={updateMeshItems}
+        meshInTheScene={meshInTheScene}
+        handleMeshSelect={handleGroupPointerDownToMeshes}
+        cizim={cizim}
+      />
+    );
+  }, [meshInTheScene]);
 
   return (
     <div className='App'>
@@ -98,15 +134,10 @@ function App() {
             width: "95%",
             height: window.innerHeight / 1.2,
           }}>
-          {cizim && <Scene setMeshInTheScene={setMeshInTheScene} cizim={cizim} />}
+          {cizim && SceneWithMemo}
         </Canvas>
       </div>
-      {meshInTheScene && (
-        <LeftSideMenu
-          setMeshProperties={setMeshProperties}
-          selectedItem={meshInTheScene.filter((el: IMeshsInTheScene) => el.isSelected)}
-        />
-      )}
+      {selectedItems && LeftSideMenuWithMemo}
     </div>
   );
 }

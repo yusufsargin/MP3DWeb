@@ -84,34 +84,9 @@ export default function SerializeData(props: TMainDrawEngine): Array<IMeshsInThe
         rotation: location,
         materialTexture: Floor1T,
         isSelected: false,
+        duvarNo: duvarFilter,
+        modulAdi: item.modulAdi,
       });
-      // setSceneMeshItems((state) => {
-      //   let last = state || [];
-
-      //   last.push({
-      //     meshWidth: en,
-      //     meshHeight: boy,
-      //     meshDepth: kalinlik,
-      //     meshName: item.adi,
-      //     position: position,
-      //     rotation: location,
-      //     materialTexture: Floor1T,
-      //   });
-
-      //   return last;
-      // });
-      // <CreateCube
-      //   key={index + Math.random()}
-      //   objProperties={{
-      //     meshWidth: en,
-      //     meshHeight: boy,
-      //     meshDepth: kalinlik,
-      //     meshName: item.adi,
-      //     position: position,
-      //     rotation: location,
-      //     materialTexture:Floor1T
-      //   }}
-      // />
     }
   });
   if (lastData.length === 0) {

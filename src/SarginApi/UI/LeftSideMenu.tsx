@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import "./LeftSideMenu.css";
 import TextureTable, { ITableItem } from "./TextureTable";
-import { Button, Divider } from "semantic-ui-react";
+import { Button, Divider, Header } from "semantic-ui-react";
 import SettingsCard, { ISelectedProduct } from "./SettingsCard";
 import { IMeshsInTheScene } from "../../App";
 
@@ -13,13 +13,19 @@ export interface ISelectedItemProp {
   duzenleVisible?: boolean;
 }
 
-export default function LeftSideMenu(props: any) {
+export type TLeftSideMenu = {
+  selectedItem: IMeshsInTheScene[];
+  setMeshProperties?: any;
+};
+
+export default function LeftSideMenu(props: TLeftSideMenu) {
   const { selectedItem, setMeshProperties } = props;
+  const material: string = ((selectedItem || [])[0] || {}).materialTexture || "";
 
   const testTableItems: Array<ITableItem> = [
     {
       textureName: "Wood",
-      textureSrc: "https://i.pinimg.com/originals/e9/ff/92/e9ff92cba52cdbab0415c67864dc3adc.jpg",
+      textureSrc: material || "",
     },
   ];
   const [hoverMenu, setHoverMenu] = useState(true);
@@ -40,6 +46,9 @@ export default function LeftSideMenu(props: any) {
         <div className='hasBorder'>
           <Divider horizontal>Seçilen Ürün Özellikleri</Divider>
           <div className='selectedItems'>
+            <Header as='h3' dividing>
+              {((selectedItem || [])[0] || {}).modulAdi || ""}
+            </Header>
             <SettingsCard productAttribute={selectedItem} duzenleVisible={true} setMeshProperties={setMeshProperties} />
           </div>
         </div>
