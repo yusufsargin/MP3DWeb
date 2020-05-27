@@ -1,4 +1,4 @@
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, Suspense, useRef } from "react";
 import { OrbitControls, Sky } from "drei";
 import * as Three from "three";
 import CreateCube from "../CreateObjects/CreateCube";
@@ -25,6 +25,14 @@ export default function Scene(props: any) {
   const [serialDataFirstWall, setSerialDataFirstWall] = useState<Array<Array<IMeshsInTheScene>>>();
   const [serialDataSecondWall, setSerialDataSecondWall] = useState<Array<Array<IMeshsInTheScene>>>();
   const { cizim, updateMeshItems, meshInTheScene, handleMeshSelect } = props;
+  const [firstGroupPosition, setFirstGroupPosition] = useState();
+  const groupItem = useRef<any>(null);
+
+  useEffect(() => {
+    if (groupItem) {
+      console.log(groupItem);
+    }
+  }, [groupItem]);
 
   const Control = (props: IOrbitControl) => {
     return (
@@ -102,7 +110,14 @@ export default function Scene(props: any) {
           {meshInTheScene &&
             meshInTheScene.map((item: Array<IMeshsInTheScene>, key: number) => {
               return (
-                <group name={item[0].modulAdi} key={key} onPointerDown={(e) => handleMeshSelect(e, 0)}>
+                <group
+                  ref={groupItem}
+                  name={item[0].modulAdi}
+                  key={key}
+                  onPointerDown={(e) => {
+                    handleMeshSelect(e, 0);
+                    console.log(groupItem.current.position.set(0, 100, 10));
+                  }}>
                   {item.map((el: IMeshsInTheScene, index: number) => {
                     if (el.duvarNo === 0) {
                       return (

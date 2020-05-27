@@ -69,11 +69,6 @@ function App() {
     [meshInTheScene]
   );
 
-  useEffect(() => {
-    if (meshInTheScene) {
-    }
-  }, [meshInTheScene]);
-
   const updateSelectedItems = useCallback((updatedData: IMeshsInTheScene[][]) => {
     if (updatedData) {
       let lastData: IMeshsInTheScene[] = [];
@@ -125,8 +120,39 @@ function App() {
     }
   };
 
+  const updateSelectedItemProperties = useCallback(
+    (updateType: string, value: any) => {
+      if (updateType.indexOf("updateTexture") !== -1) {
+        if (selectedItems && meshInTheScene) {
+          setSelectedItems((item: IMeshsInTheScene[] | any) => {
+            return item.map((el: IMeshsInTheScene) => {
+              return (el.materialTexture = value);
+            });
+          });
+
+          setMeshInTheScene((item: IMeshsInTheScene[][] | any) => {
+            return item.map((el: IMeshsInTheScene[]) => {
+              return el.map((data: IMeshsInTheScene) => {
+                if (data.isSelected) {
+                  data.materialTexture = value;
+                }
+
+                return data;
+              });
+            });
+          });
+        }
+      }
+    },
+    [selectedItems]
+  );
+
   const LeftSideMenuWithMemo = useMemo(() => {
-    return selectedItems && <LeftSideMenu selectedItem={selectedItems} />;
+    return (
+      selectedItems && (
+        <LeftSideMenu updateSelectedItemProperties={updateSelectedItemProperties} selectedItem={selectedItems} />
+      )
+    );
   }, [selectedItems]);
 
   const SceneWithMemo = useMemo(() => {

@@ -16,10 +16,11 @@ export interface ISelectedItemProp {
 export type TLeftSideMenu = {
   selectedItem: IMeshsInTheScene[];
   setMeshProperties?: any;
+  updateSelectedItemProperties: any;
 };
 
 export default function LeftSideMenu(props: TLeftSideMenu) {
-  const { selectedItem, setMeshProperties } = props;
+  const { selectedItem, setMeshProperties, updateSelectedItemProperties } = props;
   const material: string = ((selectedItem || [])[0] || {}).materialTexture || "";
 
   const testTableItems: Array<ITableItem> = [

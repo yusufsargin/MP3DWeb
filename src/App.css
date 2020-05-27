@@ -1,16 +1,25 @@
 .App {
   text-align: center;
 }
-
+.texturegridContaier {
+  padding: 16px;
+}
 .App-logo {
   height: 40vmin;
   pointer-events: none;
 }
-
+.textureListButton {
+  margin: 8px;
+}
 @media (prefers-reduced-motion: no-preference) {
   .App-logo {
     animation: App-logo-spin infinite 20s linear;
   }
+}
+
+.flow {
+  margin-top: 8px;
+  max-height: 50vh;
 }
 
 .App-header {

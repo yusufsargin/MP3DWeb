@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import "./LeftSideMenu.css";
-import { Table, Label } from "semantic-ui-react";
+import { Table, Label, Grid, Image, Button } from "semantic-ui-react";
 
 export interface ITableItem {
   textureName: string;
@@ -13,7 +13,32 @@ export type TextureTable = {
 
 export default function TextureTable(props: TextureTable) {
   const [tableItems, settableItems] = useState<Array<ITableItem>>(props.tableItems);
+  const [visible, setVisible] = useState(false);
   const imageSize = 60;
+
+  const textureList = [
+    {
+      src: require("../Materials/Texture/TextureImages/floor_1_R.jpg"),
+      textureName: "TEST",
+    },
+    {
+      src: require("../Materials/Texture/TextureImages/floor_1_T.jpg"),
+
+      textureName: "TEST",
+    },
+    {
+      src: require("../Materials/Texture/TextureImages/02.jpg"),
+      textureName: "TEST",
+    },
+    {
+      src: require("../Materials/Texture/TextureImages/02.jpg"),
+      textureName: "TEST",
+    },
+    {
+      src: require("../Materials/Texture/TextureImages/02.jpg"),
+      textureName: "TEST",
+    },
+  ];
 
   return (
     <div>
@@ -40,6 +65,25 @@ export default function TextureTable(props: TextureTable) {
           })}
         </Table.Body>
       </Table>
+      <Button className='textureListButton' size='tiny' primary onClick={() => setVisible(!visible)}>
+        Texture List
+      </Button>
+      {visible ? (
+        <div className='texturegridContaier'>
+          <Grid columns={3} className='flow'>
+            {textureList.map((item, index) => {
+              return (
+                <Grid.Column key={index}>
+                  <img src={item.src} alt='test' width={imageSize} />
+                  <p>{item.textureName}</p>
+                </Grid.Column>
+              );
+            })}
+          </Grid>
+        </div>
+      ) : (
+        ""
+      )}
     </div>
   );
 }
