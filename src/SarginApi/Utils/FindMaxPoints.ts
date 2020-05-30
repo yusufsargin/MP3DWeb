@@ -1,5 +1,5 @@
 import * as Three from "three";
-import { IMeshsInTheScene } from "../../App";
+import { IMeshsInTheScene } from "../../declation";
 
 interface IFindMinPoints {
   mesh: IMeshsInTheScene[];

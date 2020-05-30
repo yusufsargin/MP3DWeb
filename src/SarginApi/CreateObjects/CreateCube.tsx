@@ -5,41 +5,7 @@ import Floor1T from "../Materials/Texture/TextureImages/floor_1_R.jpg";
 import { useLoader } from "react-three-fiber";
 import { BasisTextureLoader } from "three/examples/jsm/loaders/BasisTextureLoader";
 import MaterialCreator from "../Materials/MaterialLib/MaterialCreator";
-
-export interface IPosition {
-  x: number;
-  y: number;
-  z: number;
-  vector?: Three.Vector3;
-}
-
-export interface ICreateCube {
-  isSelected?: boolean;
-  meshName: string;
-  meshType?: string;
-  meshWidth: number;
-  meshHeight: number;
-  meshDepth: number;
-  position: IPosition;
-  UV?: { col: number; row: number };
-  rotation?: { lx: number; ly: number; lz: number };
-  MainGroup?: Three.Group;
-  materialTexture?: string;
-  materialRef?: string;
-  materialBumb?: string;
-  hasMaterial?: boolean;
-}
-
-export interface IMaterialProp {
-  materialTexture?: string;
-  materialRef?: string;
-  materialBumb?: string;
-  attach?: any;
-}
-
-export type TCreateCube = {
-  objProperties: ICreateCube;
-};
+import { TCreateCube } from "../../declation";
 
 export default function CreateCube(props: TCreateCube) {
   const {

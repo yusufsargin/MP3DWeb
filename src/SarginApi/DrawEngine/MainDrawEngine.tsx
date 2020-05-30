@@ -1,23 +1,10 @@
 import React, { useState, useEffect } from "react";
-import { ICizimModul, IMeshsInTheScene } from "../../App";
-import CreateCube, { ICreateCube, IMaterialProp } from "../CreateObjects/CreateCube";
 import Floor1T from "../Materials/Texture/TextureImages/floor_1_T.jpg";
-
-export type TMainDrawEngine = {
-  collection: any;
-  collectionName?: string;
-  SIZERATIO?: number;
-  duvarFilter?: number;
-  setMeshesInTheScene?: any;
-};
+import { TMainDrawEngine, IMeshsInTheScene, ICizimModul } from "../../declation";
 
 export default function MainDrawEngine(props: TMainDrawEngine) {
   const { collection, SIZERATIO, duvarFilter } = props;
   let lastData: Array<IMeshsInTheScene> = [];
-
-  useEffect(() => {
-    console.log(props.setMeshesInTheScene);
-  }, [props.setMeshesInTheScene]);
 
   collection.map((item: ICizimModul, index: number) => {
     let location = { lx: 0, ly: 0, lz: 0 };
@@ -90,33 +77,6 @@ export default function MainDrawEngine(props: TMainDrawEngine) {
         rotation: location,
         materialTexture: Floor1T,
       });
-      // setSceneMeshItems((state) => {
-      //   let last = state || [];
-
-      //   last.push({
-      //     meshWidth: en,
-      //     meshHeight: boy,
-      //     meshDepth: kalinlik,
-      //     meshName: item.adi,
-      //     position: position,
-      //     rotation: location,
-      //     materialTexture: Floor1T,
-      //   });
-
-      //   return last;
-      // });
-      // <CreateCube
-      //   key={index + Math.random()}
-      //   objProperties={{
-      //     meshWidth: en,
-      //     meshHeight: boy,
-      //     meshDepth: kalinlik,
-      //     meshName: item.adi,
-      //     position: position,
-      //     rotation: location,
-      //     materialTexture:Floor1T
-      //   }}
-      // />
     } else {
       return <></>;
     }

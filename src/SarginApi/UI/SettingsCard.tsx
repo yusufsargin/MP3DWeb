@@ -2,45 +2,9 @@ import React from "react";
 import { Card, Button, Input, List, Label } from "semantic-ui-react";
 import "./LeftSideMenu.css";
 import * as Three from "three";
-import { IMeshsInTheScene } from "../../App";
-
-export interface ISelectedProduct {
-  name: string;
-  value?: number;
-  isDeletable?: boolean;
-  description?: string;
-  setFunction?: any;
-  genislik: number;
-  derinlik: number;
-  boy: number;
-  duzenleVisible?: boolean;
-}
-
-export type SelectedProduct = {
-  productAttribute?: Array<IMeshsInTheScene>;
-  duzenleVisible?: boolean;
-  setSelectedItemHandle?(value: ISelectedProduct): void;
-  setMeshProperties?: any;
-  setMeshTextureOnClick?: any;
-};
+import { IMeshsInTheScene, SelectedProduct } from "../../declation";
 
 export default function SettingsCard(props: SelectedProduct) {
-  const products: Array<IMeshsInTheScene> | any = props.productAttribute;
-
-  function setItemValue(item: IMeshsInTheScene | any, type: string, value: number) {
-    if (type.indexOf("genislik") !== -1 && item) {
-      item.size.x = value;
-    }
-    if (type.indexOf("boy") !== -1 && item) {
-      item.size.y = value;
-    }
-    if (type.indexOf("derinlik") !== -1 && item) {
-      item.size.z = value;
-    }
-
-    props.setMeshProperties && props.setMeshProperties("setSize", { size: item.size }, item.meshName);
-  }
-
   function fixToNumber(value: number) {
     return value && parseFloat(value.toFixed(2));
   }

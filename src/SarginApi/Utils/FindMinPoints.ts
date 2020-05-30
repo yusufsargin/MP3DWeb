@@ -1,9 +1,5 @@
 import * as Three from "three";
-import { IMeshsInTheScene } from "../../App";
-
-interface IFindMinPoints {
-  mesh: IMeshsInTheScene[];
-}
+import { IFindMinPoints, IMeshsInTheScene } from "../../declation";
 
 export default function FindMinPoints(props: IFindMinPoints) {
   const { mesh } = props;

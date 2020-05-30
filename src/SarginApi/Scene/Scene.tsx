@@ -5,33 +5,13 @@ import CreateCube from "../CreateObjects/CreateCube";
 import Floor1T from "../Materials/Texture/TextureImages/floor_1_T.jpg";
 import Floor1R from "../Materials/Texture/TextureImages/floor_1_R.jpg";
 import SerializeData from "../DataParser/SerializeData";
-import { IMeshsInTheScene } from "../../App";
-
-interface IOrbitControl {
-  enablePan?: boolean;
-  enableRotate?: boolean;
-  enableZoom?: boolean;
-  panSpeed?: number;
-  zoomSpeed?: number;
-  screenSpacePanning?: boolean;
-}
-
-interface IDefaultLights {
-  position?: Three.Vector3;
-  intensity?: number;
-}
+import { IDefaultLights, IOrbitControl, IMeshsInTheScene } from "../../declation";
 
 export default function Scene(props: any) {
   const [serialDataFirstWall, setSerialDataFirstWall] = useState<Array<Array<IMeshsInTheScene>>>();
   const [serialDataSecondWall, setSerialDataSecondWall] = useState<Array<Array<IMeshsInTheScene>>>();
   const { cizim, updateMeshItems, meshInTheScene, handleMeshSelect } = props;
   const groupItem = useRef<any>(null);
-
-  useEffect(() => {
-    if (groupItem) {
-      console.log(groupItem);
-    }
-  }, [groupItem]);
 
   const Control = (props: IOrbitControl) => {
     return (
@@ -116,7 +96,6 @@ export default function Scene(props: any) {
                   key={key}
                   onPointerDown={(e) => {
                     handleMeshSelect(e, 0);
-                    console.log(groupItem.current.position.set(0, 100, 10));
                   }}>
                   {item.map((el: IMeshsInTheScene, index: number) => {
                     if (el.duvarNo === 0) {
@@ -130,7 +109,7 @@ export default function Scene(props: any) {
                             meshDepth: el.meshDepth || 0,
                             isSelected: el.isSelected || false,
                             position: el.position || { x: 0, y: 0, z: 0 },
-                            materialTexture: Floor1T,
+                            materialTexture: el.materialTexture,
                             materialBumb: Floor1R,
                             materialRef: Floor1R,
                           }}

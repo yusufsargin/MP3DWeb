@@ -1,6 +1,6 @@
-import { ICizimModul, IMeshsInTheScene } from "../../App";
 import Floor1T from "../Materials/Texture/TextureImages/floor_1_T.jpg";
 import * as Three from "three";
+import { IMeshsInTheScene, ICizimModul } from "../../declation";
 
 export type TMainDrawEngine = {
   collection: any;

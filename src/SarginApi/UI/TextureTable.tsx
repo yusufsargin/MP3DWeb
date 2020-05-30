@@ -1,20 +1,13 @@
 import React, { useState } from "react";
 import "./LeftSideMenu.css";
 import { Table, Label, Grid, Image, Button } from "semantic-ui-react";
+import { TTextureTable, ITableItem } from "../../declation";
 
-export interface ITableItem {
-  textureName: string;
-  textureSrc?: string;
-}
-
-export type TextureTable = {
-  tableItems: Array<ITableItem>;
-};
-
-export default function TextureTable(props: TextureTable) {
+export default function TextureTable(props: TTextureTable) {
   const [tableItems, settableItems] = useState<Array<ITableItem>>(props.tableItems);
   const [visible, setVisible] = useState(false);
   const imageSize = 60;
+  const { setMeshTextureOnClick, selectedItem } = props;
 
   const textureList = [
     {
@@ -74,7 +67,18 @@ export default function TextureTable(props: TextureTable) {
             {textureList.map((item, index) => {
               return (
                 <Grid.Column key={index}>
-                  <img src={item.src} alt='test' width={imageSize} />
+                  <img
+                    onClick={(e) => {
+                      const target: any = e.target;
+                      if (selectedItem) {
+                        const modulAdi = selectedItem[0].modulAdi || "";
+                        setMeshTextureOnClick(target.src, modulAdi);
+                      }
+                    }}
+                    src={item.src}
+                    alt='test'
+                    width={imageSize}
+                  />
                   <p>{item.textureName}</p>
                 </Grid.Column>
               );

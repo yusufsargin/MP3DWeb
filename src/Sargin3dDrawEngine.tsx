@@ -2,12 +2,12 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 import LeftSideMenu from "./SarginApi/UI/LeftSideMenu";
 import { Canvas } from "react-three-fiber";
 import Scene from "./SarginApi/Scene/Scene";
-import * as Three from "three";
 import TestData from "./SarginApi/TextData/test.json";
 import DataParser from "./SarginApi/DataParser/DataParser";
 import FindMinPoints from "./SarginApi/Utils/FindMinPoints";
 import FindMaxPoints from "./SarginApi/Utils/FindMaxPoints";
-import { IMeshsInTheScene } from "./App";
+import { IMeshsInTheScene } from "./declation";
+import "./DrawEngine.css";
 
 export default function Sargin3dDrawEngine(props: any) {
   const [cizim] = useState<any>(DataParser(props.cizim || TestData));
@@ -44,28 +44,25 @@ export default function Sargin3dDrawEngine(props: any) {
     }
   }, []);
 
-  const setMeshTextureOnClick = useCallback(
-    (imgItem: any, id: string) => {
-      if (imgItem && id !== "") {
-        setMeshInTheScene((item: IMeshsInTheScene[][] | any) => {
-          let lastState = item || [];
+  const setMeshTextureOnClick = (imgItem: any, id: string) => {
+    if (imgItem && id !== "") {
+      let meshItem = meshInTheScene;
 
-          lastState = lastState.map((el: IMeshsInTheScene[]) => {
-            return el.map((mesh: IMeshsInTheScene) => {
-              if (mesh.modulAdi === id) {
-                mesh.materialTexture = imgItem;
-              }
+      if (meshItem) {
+        meshItem = meshItem.map((el: IMeshsInTheScene[]) => {
+          return el.map((mesh: IMeshsInTheScene) => {
+            if (mesh.modulAdi === id) {
+              mesh.materialTexture = imgItem;
+            }
 
-              return mesh;
-            });
+            return mesh;
           });
-
-          return lastState;
         });
+
+        setMeshInTheScene(meshItem);
       }
-    },
-    [meshInTheScene]
-  );
+    }
+  };
 
   const handleGroupPointerDownToMeshes = (e: PointerEvent | any, duvarNo?: number) => {
     e.stopPropagation();
@@ -95,8 +92,6 @@ export default function Sargin3dDrawEngine(props: any) {
       const maxPoints = FindMaxPoints({
         mesh: item,
       });
-
-      console.log(maxPoints.x - minPoints.x);
 
       updateSelectedItems(updatedData);
     }
@@ -162,8 +157,8 @@ export default function Sargin3dDrawEngine(props: any) {
           }}>
           {cizim && SceneWithMemo}
         </Canvas>
+        {selectedItems && LeftSideMenuWithMemo}
       </div>
-      {selectedItems && LeftSideMenuWithMemo}
     </div>
   );
 }

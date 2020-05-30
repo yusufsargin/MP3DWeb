@@ -1,24 +1,9 @@
 import React, { useState } from "react";
 import "./LeftSideMenu.css";
-import TextureTable, { ITableItem } from "./TextureTable";
+import TextureTable from "./TextureTable";
 import { Button, Divider, Header } from "semantic-ui-react";
-import SettingsCard, { ISelectedProduct } from "./SettingsCard";
-import { IMeshsInTheScene } from "../../App";
-
-export interface ISelectedItemProp {
-  name: string;
-  genislik: number;
-  boy: number;
-  derinlik: number;
-  duzenleVisible?: boolean;
-}
-
-export type TLeftSideMenu = {
-  selectedItem: IMeshsInTheScene[];
-  setMeshProperties?: any;
-  updateSelectedItemProperties: any;
-  setMeshTextureOnClick: any;
-};
+import SettingsCard from "./SettingsCard";
+import { TLeftSideMenu, ITableItem } from "../../declation";
 
 export default function LeftSideMenu(props: TLeftSideMenu) {
   const { selectedItem, setMeshProperties, updateSelectedItemProperties, setMeshTextureOnClick } = props;
@@ -42,7 +27,11 @@ export default function LeftSideMenu(props: TLeftSideMenu) {
         <div className='texture itemsContainer hasBorder'>
           <Divider horizontal>Texture Menu</Divider>
           <div className='texture itemrow'>
-            <TextureTable tableItems={testTableItems} />
+            <TextureTable
+              selectedItem={selectedItem}
+              setMeshTextureOnClick={setMeshTextureOnClick}
+              tableItems={testTableItems}
+            />
           </div>
         </div>
         <div className='hasBorder'>
@@ -51,12 +40,7 @@ export default function LeftSideMenu(props: TLeftSideMenu) {
             <Header as='h3' dividing>
               {((selectedItem || [])[0] || {}).modulAdi || ""}
             </Header>
-            <SettingsCard
-              setMeshTextureOnClick={setMeshTextureOnClick}
-              productAttribute={selectedItem}
-              duzenleVisible={true}
-              setMeshProperties={setMeshProperties}
-            />
+            <SettingsCard productAttribute={selectedItem} duzenleVisible={true} setMeshProperties={setMeshProperties} />
           </div>
         </div>
       </div>
