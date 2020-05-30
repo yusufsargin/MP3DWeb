@@ -25,7 +25,6 @@ export default function Scene(props: any) {
   const [serialDataFirstWall, setSerialDataFirstWall] = useState<Array<Array<IMeshsInTheScene>>>();
   const [serialDataSecondWall, setSerialDataSecondWall] = useState<Array<Array<IMeshsInTheScene>>>();
   const { cizim, updateMeshItems, meshInTheScene, handleMeshSelect } = props;
-  const [firstGroupPosition, setFirstGroupPosition] = useState();
   const groupItem = useRef<any>(null);
 
   useEffect(() => {
@@ -55,6 +54,7 @@ export default function Scene(props: any) {
     if (serialDataFirstWall && serialDataSecondWall) {
       serialDataFirstWall.map((item) => {
         updateMeshItems(item);
+        return;
       });
       serialDataSecondWall.map((item) => {
         updateMeshItems(item);

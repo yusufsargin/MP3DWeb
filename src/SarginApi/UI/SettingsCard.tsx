@@ -21,6 +21,7 @@ export type SelectedProduct = {
   duzenleVisible?: boolean;
   setSelectedItemHandle?(value: ISelectedProduct): void;
   setMeshProperties?: any;
+  setMeshTextureOnClick?: any;
 };
 
 export default function SettingsCard(props: SelectedProduct) {

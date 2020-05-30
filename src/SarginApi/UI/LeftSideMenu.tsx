@@ -17,10 +17,11 @@ export type TLeftSideMenu = {
   selectedItem: IMeshsInTheScene[];
   setMeshProperties?: any;
   updateSelectedItemProperties: any;
+  setMeshTextureOnClick: any;
 };
 
 export default function LeftSideMenu(props: TLeftSideMenu) {
-  const { selectedItem, setMeshProperties, updateSelectedItemProperties } = props;
+  const { selectedItem, setMeshProperties, updateSelectedItemProperties, setMeshTextureOnClick } = props;
   const material: string = ((selectedItem || [])[0] || {}).materialTexture || "";
 
   const testTableItems: Array<ITableItem> = [
@@ -50,7 +51,12 @@ export default function LeftSideMenu(props: TLeftSideMenu) {
             <Header as='h3' dividing>
               {((selectedItem || [])[0] || {}).modulAdi || ""}
             </Header>
-            <SettingsCard productAttribute={selectedItem} duzenleVisible={true} setMeshProperties={setMeshProperties} />
+            <SettingsCard
+              setMeshTextureOnClick={setMeshTextureOnClick}
+              productAttribute={selectedItem}
+              duzenleVisible={true}
+              setMeshProperties={setMeshProperties}
+            />
           </div>
         </div>
       </div>

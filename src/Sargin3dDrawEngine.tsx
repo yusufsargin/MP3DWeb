@@ -9,7 +9,7 @@ import FindMinPoints from "./SarginApi/Utils/FindMinPoints";
 import FindMaxPoints from "./SarginApi/Utils/FindMaxPoints";
 import { IMeshsInTheScene } from "./App";
 
-export default function Sargin3dDrawEngine(props:any) {
+export default function Sargin3dDrawEngine(props: any) {
   const [cizim] = useState<any>(DataParser(props.cizim || TestData));
   const [selectedItems, setSelectedItems] = useState<Array<IMeshsInTheScene>>();
 
@@ -43,6 +43,29 @@ export default function Sargin3dDrawEngine(props:any) {
       setSelectedItems(lastData);
     }
   }, []);
+
+  const setMeshTextureOnClick = useCallback(
+    (imgItem: any, id: string) => {
+      if (imgItem && id !== "") {
+        setMeshInTheScene((item: IMeshsInTheScene[][] | any) => {
+          let lastState = item || [];
+
+          lastState = lastState.map((el: IMeshsInTheScene[]) => {
+            return el.map((mesh: IMeshsInTheScene) => {
+              if (mesh.modulAdi === id) {
+                mesh.materialTexture = imgItem;
+              }
+
+              return mesh;
+            });
+          });
+
+          return lastState;
+        });
+      }
+    },
+    [meshInTheScene]
+  );
 
   const handleGroupPointerDownToMeshes = (e: PointerEvent | any, duvarNo?: number) => {
     e.stopPropagation();
@@ -109,7 +132,11 @@ export default function Sargin3dDrawEngine(props:any) {
   const LeftSideMenuWithMemo = useMemo(() => {
     return (
       selectedItems && (
-        <LeftSideMenu updateSelectedItemProperties={updateSelectedItemProperties} selectedItem={selectedItems} />
+        <LeftSideMenu
+          setMeshTextureOnClick={setMeshTextureOnClick}
+          updateSelectedItemProperties={updateSelectedItemProperties}
+          selectedItem={selectedItems}
+        />
       )
     );
   }, [selectedItems]);
