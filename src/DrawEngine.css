@@ -1,3 +1,9 @@
 .scene {
   position: relative;
 }
+.glfexporter {
+  width: 50%;
+  margin: auto;
+  margin-top: 50px;
+  border-radius: 25px;
+}

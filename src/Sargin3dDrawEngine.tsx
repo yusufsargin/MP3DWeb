@@ -1,15 +1,19 @@
 import React, { useState, useEffect, useCallback, useMemo } from "react";
 import LeftSideMenu from "./SarginApi/UI/LeftSideMenu";
-import { Canvas } from "react-three-fiber";
+import { Canvas, useThree } from "react-three-fiber";
 import Scene from "./SarginApi/Scene/Scene";
+import * as Three from "three";
+import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter";
 import TestData from "./SarginApi/TextData/test.json";
 import DataParser from "./SarginApi/DataParser/DataParser";
 import FindMinPoints from "./SarginApi/Utils/FindMinPoints";
 import FindMaxPoints from "./SarginApi/Utils/FindMaxPoints";
 import { IMeshsInTheScene } from "./declation";
 import "./DrawEngine.css";
+import { Button } from "semantic-ui-react";
 
 export default function Sargin3dDrawEngine(props: any) {
+  const [scene, setScene] = useState<Three.Scene>();
   const [cizim] = useState<any>(DataParser(props.cizim || TestData));
   const [selectedItems, setSelectedItems] = useState<Array<IMeshsInTheScene>>();
 
@@ -44,7 +48,47 @@ export default function Sargin3dDrawEngine(props: any) {
     }
   }, []);
 
-  const setMeshTextureOnClick = (imgItem: any, id: string) => {
+  function save(blob: any, filename: string) {
+    var link = document.createElement("a");
+    link.style.display = "none";
+
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.click();
+
+    // URL.revokeObjectURL( url ); breaks Firefox...
+  }
+
+  function saveString(text: any, filename: string) {
+    save(new Blob([text], { type: "text/plain" }), filename);
+  }
+
+  function gltfExportScene() {
+    const exporter = new GLTFExporter();
+    if (scene && scene.children.length > 2) {
+      const meshes: any = scene.children.filter((item) => item.type === "Group");
+
+      exporter.parse(
+        meshes,
+        function (gltf) {
+          if (gltf instanceof ArrayBuffer) {
+            saveArrayBuffer(gltf, "scene.glb");
+          } else {
+            const output = JSON.stringify(gltf, null, 2);
+
+            saveString(output, "scene.gltf");
+          }
+        },
+        {}
+      );
+    }
+  }
+
+  function saveArrayBuffer(buffer: any, filename: string) {
+    save(new Blob([buffer], { type: "application/octet-stream" }), filename);
+  }
+
+  const setMeshTextureOnClick = async (imgItem: any, id: string) => {
     if (imgItem && id !== "") {
       let meshItem = meshInTheScene;
 
@@ -59,7 +103,7 @@ export default function Sargin3dDrawEngine(props: any) {
           });
         });
 
-        setMeshInTheScene(meshItem);
+        await setMeshInTheScene(meshItem);
       }
     }
   };
@@ -143,6 +187,8 @@ export default function Sargin3dDrawEngine(props: any) {
         meshInTheScene={meshInTheScene}
         handleMeshSelect={handleGroupPointerDownToMeshes}
         cizim={cizim}
+        scene={scene}
+        setScene={setScene}
       />
     );
   }, [meshInTheScene]);
@@ -158,6 +204,11 @@ export default function Sargin3dDrawEngine(props: any) {
           {cizim && SceneWithMemo}
         </Canvas>
         {selectedItems && LeftSideMenuWithMemo}
+      </div>
+      <div className='glfexporter'>
+        <Button size='huge' color='orange' onClick={() => gltfExportScene()}>
+          Glf Exporter
+        </Button>
       </div>
     </div>
   );

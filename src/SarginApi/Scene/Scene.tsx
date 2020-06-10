@@ -6,12 +6,19 @@ import Floor1T from "../Materials/Texture/TextureImages/floor_1_T.jpg";
 import Floor1R from "../Materials/Texture/TextureImages/floor_1_R.jpg";
 import SerializeData from "../DataParser/SerializeData";
 import { IDefaultLights, IOrbitControl, IMeshsInTheScene } from "../../declation";
+import { useThree } from "react-three-fiber";
 
 export default function Scene(props: any) {
   const [serialDataFirstWall, setSerialDataFirstWall] = useState<Array<Array<IMeshsInTheScene>>>();
   const [serialDataSecondWall, setSerialDataSecondWall] = useState<Array<Array<IMeshsInTheScene>>>();
   const { cizim, updateMeshItems, meshInTheScene, handleMeshSelect } = props;
   const groupItem = useRef<any>(null);
+  const { setScene } = props;
+  const { scene } = useThree();
+
+  useEffect(() => {
+    setScene(scene);
+  }, [scene]);
 
   const Control = (props: IOrbitControl) => {
     return (
