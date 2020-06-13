@@ -70,6 +70,7 @@ export interface IMeshsInTheScene {
   duvarNo?: number;
   rotation: { lx: number; ly: number; lz: number };
   modulAdi?: string;
+  shouldUpdate?: boolean;
 }
 export interface ITableItem {
   textureName: string;
@@ -116,6 +117,7 @@ export interface ICreateCube {
   materialRef?: string;
   materialBumb?: string;
   hasMaterial?: boolean;
+  needUpdate?: boolean;
 }
 
 export interface IOrbitControl {

@@ -1,9 +1,5 @@
-import React, { Suspense, useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useMemo, useRef } from "react";
 import * as Three from "three";
-import { TextureLoader, MaterialLoader } from "three";
-import Floor1T from "../Materials/Texture/TextureImages/floor_1_R.jpg";
-import { useLoader } from "react-three-fiber";
-import { BasisTextureLoader } from "three/examples/jsm/loaders/BasisTextureLoader";
 import MaterialCreator from "../Materials/MaterialLib/MaterialCreator";
 import { TCreateCube } from "../../declation";
 
@@ -17,24 +13,21 @@ export default function CreateCube(props: TCreateCube) {
     materialTexture,
     materialBumb,
     materialRef,
+    needUpdate,
   } = props.objProperties;
   //Material Control And Add --------------------------------------------
   const diffuseTexture = materialTexture || "";
   const bumpTexture = materialBumb || "";
   const refTexture = materialRef || "";
 
-  const [material, setMaterial] = useState<Three.MeshStandardMaterial>();
-
-  useEffect(() => {
-    const material = MaterialCreator({
+  const [material] = useState<Three.MeshStandardMaterial>(
+    MaterialCreator({
       materialTexture: diffuseTexture,
       materialBumb: bumpTexture,
       materialRef: refTexture,
       bumbScale: 0.5,
-    });
-
-    setMaterial(material);
-  }, []);
+    })
+  );
   //------------------------------------------------
 
   //Location Clc-------------------
@@ -46,10 +39,32 @@ export default function CreateCube(props: TCreateCube) {
   );
 
   //-------------------------------
+  const box = useMemo(() => new Three.BoxBufferGeometry(meshWidth, meshHeight, meshDepth), []);
+  const materialMemo = useMemo(
+    () =>
+      MaterialCreator({
+        materialTexture: diffuseTexture,
+        materialBumb: bumpTexture,
+        materialRef: refTexture,
+        bumbScale: 0.5,
+      }),
+    [material]
+  );
 
   return (
-    <mesh name={meshName} position={[lastPosition.x, lastPosition.y, lastPosition.z]} material={material}>
-      <boxBufferGeometry attach='geometry' args={[meshWidth, meshHeight, meshDepth]} />
-    </mesh>
+    <mesh
+      matrixAutoUpdate={false}
+      onUpdate={(self) => {
+        const material: any = self.material;
+        if (needUpdate) {
+          material.needUpdate = true;
+          self.updateMatrix();
+        }
+      }}
+      name={meshName}
+      geometry={box}
+      position={[lastPosition.x, lastPosition.y, lastPosition.z]}
+      material={materialMemo}
+    />
   );
 }

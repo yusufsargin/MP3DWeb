@@ -88,6 +88,7 @@ export default function SerializeData(props: TMainDrawEngine): Array<IMeshsInThe
         duvarNo: duvarFilter,
         modulAdi: item.modulAdi,
         objItem: new Three.BoxBufferGeometry(en, boy, kalinlik),
+        shouldUpdate: false,
       });
     }
   });

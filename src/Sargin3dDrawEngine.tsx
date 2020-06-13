@@ -1,7 +1,7 @@
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useRef } from "react";
 import LeftSideMenu from "./SarginApi/UI/LeftSideMenu";
-import { Canvas, useThree } from "react-three-fiber";
-import Scene from "./SarginApi/Scene/Scene";
+import { Canvas, useThree, useResource } from "react-three-fiber";
+import { Scene } from "./SarginApi/Scene/Scene";
 import * as Three from "three";
 import { GLTFExporter } from "three/examples/jsm/exporters/GLTFExporter";
 import TestData from "./SarginApi/TextData/test.json";
@@ -16,7 +16,6 @@ export default function Sargin3dDrawEngine(props: any) {
   const [scene, setScene] = useState<Three.Scene>();
   const [cizim] = useState<any>(DataParser(props.cizim || TestData));
   const [selectedItems, setSelectedItems] = useState<Array<IMeshsInTheScene>>();
-
   const [meshInTheScene, setMeshInTheScene] = useState<Array<Array<IMeshsInTheScene>>>();
 
   const updateMeshItems = useCallback(
@@ -32,21 +31,24 @@ export default function Sargin3dDrawEngine(props: any) {
     [meshInTheScene]
   );
 
-  const updateSelectedItems = useCallback((updatedData: IMeshsInTheScene[][]) => {
-    if (updatedData) {
-      let lastData: IMeshsInTheScene[] = [];
+  const updateSelectedItems = useCallback(
+    (updatedData: IMeshsInTheScene[][]) => {
+      if (updatedData) {
+        let lastData: IMeshsInTheScene[] = [];
 
-      updatedData.map((el: Array<IMeshsInTheScene>) => {
-        el.map((item) => {
-          if (item.isSelected) {
-            lastData.push(item);
-          }
+        updatedData.map((el: Array<IMeshsInTheScene>) => {
+          el.map((item) => {
+            if (item.isSelected) {
+              lastData.push(item);
+            }
+          });
         });
-      });
 
-      setSelectedItems(lastData);
-    }
-  }, []);
+        setSelectedItems(lastData);
+      }
+    },
+    [setSelectedItems]
+  );
 
   function save(blob: any, filename: string) {
     var link = document.createElement("a");
@@ -88,7 +90,7 @@ export default function Sargin3dDrawEngine(props: any) {
     save(new Blob([buffer], { type: "application/octet-stream" }), filename);
   }
 
-  const setMeshTextureOnClick = async (imgItem: any, id: string) => {
+  const setMeshTextureOnClick = (imgItem: any, id: string) => {
     if (imgItem && id !== "") {
       let meshItem = meshInTheScene;
 
@@ -97,13 +99,16 @@ export default function Sargin3dDrawEngine(props: any) {
           return el.map((mesh: IMeshsInTheScene) => {
             if (mesh.modulAdi === id) {
               mesh.materialTexture = imgItem;
+              mesh.shouldUpdate = true;
+            } else {
+              mesh.shouldUpdate = false;
             }
 
             return mesh;
           });
         });
 
-        await setMeshInTheScene(meshItem);
+        setMeshInTheScene(meshItem);
       }
     }
   };
@@ -117,11 +122,13 @@ export default function Sargin3dDrawEngine(props: any) {
           if (el.duvarNo === (duvarNo || 0)) {
             if (el.modulAdi === groupName) {
               el.isSelected = true;
+              el.shouldUpdate = true;
               return el;
             }
           }
 
           el.isSelected = false;
+          el.shouldUpdate = false;
           return el;
         });
       });
@@ -192,6 +199,7 @@ export default function Sargin3dDrawEngine(props: any) {
       />
     );
   }, [meshInTheScene]);
+
   return (
     <div className='App'>
       <div className='scene'>
